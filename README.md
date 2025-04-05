@@ -58,3 +58,6 @@
 ---
 
 ## 📊 시각화 슬라이드
+
+- [데이터 분포 시각화]
+https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFSSFo/edit?usp=sharing
