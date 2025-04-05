@@ -29,6 +29,7 @@
 ---
 
 ## 🗂️ 프로젝트 구조도
+<pre><code>
 BA_Finance_6/
 ├── dataset/                # 금융 데이터셋 폴더
 │   ├── 차주정보.csv
@@ -42,7 +43,7 @@ BA_Finance_6/
 ├── dataset.json            # 데이터셋 메타정보
 ├── .gitignore              # Git 무시할 파일 목록
 └── README.md               # 프로젝트 설명서
-
+</code></pre>
 ---
 
 ## 📊 시각화 슬라이드
