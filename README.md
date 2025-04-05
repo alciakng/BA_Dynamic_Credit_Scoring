@@ -22,7 +22,10 @@
 - 시각화를 담당하는 클래스입니다.
 - seaborn, matplotlib 기반 다양한 그래프 (막대그래프, 박스플롯, 트리맵 등) 를 생성합니다.
 
-### 5. `main.py`
+### 5. `machine_learner.py`
+- 머신러닝 담당 클래스입니다.
+
+### 6. `main.py`
 - 이 프로젝트의 **메인 실행 파일**입니다.
 - 위의 클래스들을 조합하여 전체 분석 파이프라인을 실행합니다.
 
@@ -31,19 +34,26 @@
 ## 🗂️ 프로젝트 구조도
 <pre><code>📁 BA_Finance_6/ 
  ├── 📂 dataset/ # 금융 데이터셋 (.csv 파일 모음) 
+ 
  │ ├── 📄 차주정보.csv  # 대출자 정보 
  │ ├── 📄 개인대출정보.csv # 개인 대출 내역 
  │ ├── 📄 신용카드개설정보.csv # 카드 개설 내역 
  │ └── 📄 보험담보정보.csv # 보험 담보 관련 데이터 
  │ └── ... 기타.csv
+ │
  ├── 🧠 common_code.py # 공통 코드 테이블 정의 (static class) 
+ │
  ├── 🧪 data_builder.py # 데이터 로딩 및 병합 처리 
  ├── 📊 data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) 
+ ├── 🧪 machine_learner.py # ML 처리
+ │
  ├── 🚀 main.py # 프로젝트 실행용 메인 스크립트 
+ │
  ├── 📝 practice.py # 실험용 코드 (연습, 테스트) 
  ├── 🧾 dataset.json # 데이터셋에 대한 메타 정보 │ 
+ │
  ├── 📃 .gitignore # Git에서 추적하지 않을 파일 목록 
- └── 📘 README.md # 프로젝트 설명 문서 ``` </code></pre>
+ └── 📘 README.md # 프로젝트 설명 문서 </code></pre>
 ---
 
 ## 📊 시각화 슬라이드
