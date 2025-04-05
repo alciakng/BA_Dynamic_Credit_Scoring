@@ -29,8 +29,7 @@
 ---
 
 ## 🗂️ 프로젝트 구조도
-<pre><code>
-BA_Finance_6/
+<pre><code>BA_Finance_6/
 ├── dataset/                # 금융 데이터셋 폴더
 │   ├── 차주정보.csv
 │   ├── 개인대출정보.csv
