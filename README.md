@@ -29,17 +29,19 @@
 ---
 
 ## 🗂️ 프로젝트 구조도
-
-BA_Financial_6/ 
-├── dataset/ 
-│ ├── 차주정보.csv │ 
-├── 개인대출정보.csv │ 
-└── ... 기타 데이터셋들 
-├── common_code.py         -- 공통코드 Json 객체클래스 
-├── data_builder.py        -- 데이터 빌더클래스 
-├── data_visualizer.py     -- 데이터 시각화 담당 클래스 
-├── main.py                -- main 클래스 
-└── README.md
+BA_Finance_6/
+├── dataset/                # 금융 데이터셋 폴더
+│   ├── 차주정보.csv
+│   ├── 개인대출정보.csv
+│   └── ... 기타 데이터셋들
+├── common_code.py          # 공통 코드 정의
+├── data_builder.py         # 데이터 로딩 및 병합
+├── data_visualizer.py      # 데이터 시각화
+├── main.py                 # 메인 실행 파일
+├── practice.py             # 연습용 스크립트
+├── dataset.json            # 데이터셋 메타정보
+├── .gitignore              # Git 무시할 파일 목록
+└── README.md               # 프로젝트 설명서
 
 ---
 
