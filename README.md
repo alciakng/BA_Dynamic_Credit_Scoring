@@ -29,20 +29,7 @@
 ---
 
 ## 🗂️ 프로젝트 구조도
-<pre><code>BA_Finance_6/
-├── dataset/                # 금융 데이터셋 폴더
-│   ├── 차주정보.csv
-│   ├── 개인대출정보.csv
-│   └── ... 기타 데이터셋들
-├── common_code.py          # 공통 코드 정의
-├── data_builder.py         # 데이터 로딩 및 병합
-├── data_visualizer.py      # 데이터 시각화
-├── main.py                 # 메인 실행 파일
-├── practice.py             # 연습용 스크립트
-├── dataset.json            # 데이터셋 메타정보
-├── .gitignore              # Git 무시할 파일 목록
-└── README.md               # 프로젝트 설명서
-</code></pre>
+<pre><code>```text 📁 BA_Finance_6/ ├── 📂 dataset/ # 금융 데이터셋 (.csv 파일 모음) │ ├── 📄 차주정보.csv # 대출자 정보 │ ├── 📄 개인대출정보.csv # 개인 대출 내역 │ ├── 📄 신용카드개설정보.csv # 카드 개설 내역 │ └── 📄 보험담보정보.csv # 보험 담보 관련 데이터 │ ├── 🧠 common_code.py # 공통 코드 테이블 정의 (static class) ├── 🧪 data_builder.py # 데이터 로딩 및 병합 처리 ├── 📊 data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) ├── 🚀 main.py # 프로젝트 실행용 메인 스크립트 ├── 📝 practice.py # 실험용 코드 (연습, 테스트) ├── 🧾 dataset.json # 데이터셋에 대한 메타 정보 │ ├── 📃 .gitignore # Git에서 추적하지 않을 파일 목록 └── 📘 README.md # 프로젝트 설명 문서 ``` </code></pre>
 ---
 
 ## 📊 시각화 슬라이드
