@@ -17,19 +17,19 @@
  │ └── 📄 보험담보정보.csv # 보험 담보 관련 데이터 
  │ └── ... 기타.csv
  │
- ├── 🧠 common_code.py # 공통 코드 테이블 정의 (static class) 
+ ├── common_code.py # 공통 코드 테이블 정의 (static class) 
  │
- ├── 🧪 data_builder.py # 데이터 로딩 및 병합 처리 
- ├── 📊 data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) 
- ├── 🧪 machine_learner.py # ML 처리
+ ├── data_builder.py # 데이터 로딩 및 병합 처리 
+ ├── data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) 
+ ├── machine_learner.py # ML 처리
  │
- ├── 🚀 main.py # 프로젝트 실행용 메인 스크립트 
+ ├── main.py # 프로젝트 실행용 메인 스크립트 
  │
- ├── 📝 practice.py # 실험용 코드 (연습, 테스트) 
- ├── 🧾 dataset.json # 데이터셋에 대한 메타 정보 │ 
+ ├── practice.py # 실험용 코드 (연습, 테스트) 
+ ├── dataset.json # 데이터셋에 대한 메타 정보 │ 
  │
- ├── 📃 .gitignore # Git에서 추적하지 않을 파일 목록 
- └── 📘 README.md # 프로젝트 설명 문서 </code></pre>
+ ├── .gitignore # Git에서 추적하지 않을 파일 목록 
+ └── README.md # 프로젝트 설명 문서 </code></pre>
 
 ### 1. `dataset/`   
 ##### 신용정보원 모의데이터는 보안상 올리지 않습니다.(신용정보원 AI 학습장 참고 : https://ailp.kcredit.or.kr:3446/frt/main.do)
@@ -82,5 +82,7 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ---
 
+## 🧠 사업기획안
 
+### 4.17 Scheduled to be updated
 
