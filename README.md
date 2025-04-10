@@ -7,6 +7,30 @@
 
 ## 📁 프로젝트 구성
 
+### 🗂️ 프로젝트 구조도
+<pre><code>📁 BA_Finance_6/ 
+ ├── 📂 dataset/ # 금융 데이터셋 (.csv 파일 모음) 
+ 
+ │ ├── 📄 차주정보.csv  # 대출자 정보 
+ │ ├── 📄 개인대출정보.csv # 개인 대출 내역 
+ │ ├── 📄 신용카드개설정보.csv # 카드 개설 내역 
+ │ └── 📄 보험담보정보.csv # 보험 담보 관련 데이터 
+ │ └── ... 기타.csv
+ │
+ ├── 🧠 common_code.py # 공통 코드 테이블 정의 (static class) 
+ │
+ ├── 🧪 data_builder.py # 데이터 로딩 및 병합 처리 
+ ├── 📊 data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) 
+ ├── 🧪 machine_learner.py # ML 처리
+ │
+ ├── 🚀 main.py # 프로젝트 실행용 메인 스크립트 
+ │
+ ├── 📝 practice.py # 실험용 코드 (연습, 테스트) 
+ ├── 🧾 dataset.json # 데이터셋에 대한 메타 정보 │ 
+ │
+ ├── 📃 .gitignore # Git에서 추적하지 않을 파일 목록 
+ └── 📘 README.md # 프로젝트 설명 문서 </code></pre>
+
 ### 1. `dataset/`   
 ##### 신용정보원 모의데이터는 보안상 올리지 않습니다.(신용정보원 AI 학습장 참고 : https://ailp.kcredit.or.kr:3446/frt/main.do)
 - 차주, 대출, 신용카드, 연체정보 등 다양한 금융 데이터셋이 저장된 폴더입니다.
@@ -31,32 +55,32 @@
 
 ---
 
-## 🗂️ 프로젝트 구조도
-<pre><code>📁 BA_Finance_6/ 
- ├── 📂 dataset/ # 금융 데이터셋 (.csv 파일 모음) 
- 
- │ ├── 📄 차주정보.csv  # 대출자 정보 
- │ ├── 📄 개인대출정보.csv # 개인 대출 내역 
- │ ├── 📄 신용카드개설정보.csv # 카드 개설 내역 
- │ └── 📄 보험담보정보.csv # 보험 담보 관련 데이터 
- │ └── ... 기타.csv
- │
- ├── 🧠 common_code.py # 공통 코드 테이블 정의 (static class) 
- │
- ├── 🧪 data_builder.py # 데이터 로딩 및 병합 처리 
- ├── 📊 data_visualizer.py # 시각화 함수 정의 (matplotlib, seaborn) 
- ├── 🧪 machine_learner.py # ML 처리
- │
- ├── 🚀 main.py # 프로젝트 실행용 메인 스크립트 
- │
- ├── 📝 practice.py # 실험용 코드 (연습, 테스트) 
- ├── 🧾 dataset.json # 데이터셋에 대한 메타 정보 │ 
- │
- ├── 📃 .gitignore # Git에서 추적하지 않을 파일 목록 
- └── 📘 README.md # 프로젝트 설명 문서 </code></pre>
----
-
 ## 📊 시각화 슬라이드
 
 - [데이터 분포 시각화]
 https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFSSFo/edit?usp=sharing
+
+---
+
+## 🧪 Staggered DID 
+
+### 1) 전략적 연체율 식별을 위한 Staggered DID
+<img width="882" alt="image" src="https://github.com/user-attachments/assets/bc442d58-9700-4b0c-8a64-d08fef575620" />
+
+### 2) Pre Parallel Trend Assumption 검증
+<img width="638" alt="image" src="https://github.com/user-attachments/assets/b1b1fd34-fc1b-4fd3-824c-9372a65a1f65" />
+
+---
+
+## 🧪 전략적연체에 유의한 feature 식별
+
+### 1) 각 집단의 연체율을 예측
+<img width="1159" alt="image" src="https://github.com/user-attachments/assets/a28a7f4b-bec1-488a-98ae-b10af92a6dca" />
+
+### 2) SHAP(Feature Importance) 방법론을 통해 유의한 변수식별 
+<img width="900" alt="image" src="https://github.com/user-attachments/assets/eeb5a74c-162e-4d06-97b8-9fed6d788495" />
+
+---
+
+
+
