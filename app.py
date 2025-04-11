@@ -24,18 +24,20 @@ with open(dataset_path, 'r', encoding='utf-8') as f:
     dataset = json.load(f)
 
 # 데이터셋 빌더 초기화 (public)
-builder = DatasetBuilder(dataset)
+#builder = DatasetBuilder(dataset)
 # 시각화클래스 초기화 (public)
 visualizer = DataVisualizer()
 
 # 표준업종 10차코드 로드 
-builder.load_kic()
+#builder.load_kic()
 # 데이터 로드 
-builder.load_data()
+#builder.load_data()
 
 # -------------------------------------------------------------
 # Streamlit Application
 # -------------------------------------------------------------
+st.write("🔍 상태:", st.session_state.get("logged_in"))
+st.write("📍 위치 도달함")
 
 ensure_login()
 main_condition()

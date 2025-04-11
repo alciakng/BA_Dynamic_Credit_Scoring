@@ -34,6 +34,9 @@ def login():
 
 # 로그인 상태 확인 함수
 def ensure_login():
-    if not st.session_state.get('logged_in', False):
+    if 'logged_in' not in st.session_state:
+        st.session_state['logged_in'] = False
+
+    if not st.session_state['logged_in']:
         login()
-        st.stop()
+        st.stop()  # 로그인 안 됐으면 여기서 렌더 중단
