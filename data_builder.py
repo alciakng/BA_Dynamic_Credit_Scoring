@@ -77,7 +77,7 @@ class DatasetBuilder:
 
     def load_data(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        datset_dir = os.path.join(base_dir, 'dataset')
+        datset_dir = os.path.join(base_dir, 'data')
 
         self.df_차주 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['차주정보']))  
         self.df_기업개요정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['기업개요정보']))

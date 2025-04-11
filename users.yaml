@@ -1,0 +1,11 @@
+# users.yaml
+# 비밀번호는 반드시 SHA256 해시값으로 저장해야 합니다.
+
+admin:
+  password: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"  # password
+
+testuser:
+  password: "e99a18c428cb38d5f260853678922e03abd8334c"  # abc123
+
+jane:
+  password: "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8"  # 123456

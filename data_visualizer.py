@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 class DataVisualizer:
     def __init__(self):
@@ -75,6 +76,28 @@ class DataVisualizer:
         fig.update_layout(title=title)
         
         fig.show()
+    
+
+    def multiple_bar(self, df1, df2, feature, x_axis_title,y_axis_title, category_title_1, category_title_2,  title):
+
+        # Plotly 시각화
+        fig = go.Figure(data=[
+            go.Bar(name=category_title_1, x=feature, y=df1),
+            go.Bar(name=category_title_2, x=feature, y=df2)
+        ])
+
+        # 레이아웃 설정
+        fig.update_layout(
+            barmode='group',
+            title=title,
+            xaxis_title=x_axis_title,
+            yaxis_title=y_axis_title,
+            xaxis_tickangle=-45,
+            height=500,
+            width=900
+        )
+
+        return fig
 
     # 박스플롯 차트
     def box(self,x,y,x_label,y_label,title):
@@ -115,6 +138,44 @@ class DataVisualizer:
         plt.title(f'Scatter plot of {y} vs {x}')
         plt.tight_layout()
         plt.show()
+
+
+    def multi_scatter(self, df1, df2, x, y, x_axis_title, y_axis_title, df1_name, df2_name):
+        fig = go.Figure()
+
+        # 기준
+        fig.add_trace(go.Scatter(
+            x=df1[x],
+            y=df1[y],
+            mode='lines+markers',
+            name=df1_name,
+            marker=dict(symbol='circle', color='teal'),
+            line=dict(color='teal')
+        ))
+
+        # 비교 
+        fig.add_trace(go.Scatter(
+            x=df2[x],
+            y=df2[y],
+            mode='lines+markers',
+            name=df2_name,
+            marker=dict(symbol='square', color='indianred'),
+            line=dict(color='indianred')
+        ))
+
+        # 레이아웃 설정
+        fig.update_layout(
+            title='({df1_name} vs {df2_name})',
+            xaxis_title=x_axis_title,
+            yaxis_title=y_axis_title,
+            xaxis=dict(tickmode='array', tickvals=df1['YM']),
+            legend=dict(title='Group'),
+            template='simple_white',
+            height=500
+        )
+
+        return fig
+
 
     # 히트맵 차트
     def heatmap_corr(self):

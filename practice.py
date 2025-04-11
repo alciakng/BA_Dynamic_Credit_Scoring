@@ -1,3 +1,4 @@
+import streamlit as st
 from datetime import datetime
 from matplotlib import ticker
 import seaborn as sns 
@@ -17,6 +18,7 @@ from sklearn.model_selection import train_test_split
 
 from common_code import CommonCode
 from linearmodels.panel import PanelOLS
+
 
 # 모든컬럼 확인 옵션 
 pd.set_option('display.max_columns', None) 
@@ -768,19 +770,6 @@ merged = merged.fillna(method='ffill').fillna(method='bfill')  # 결측값 채�
 merged_filterling = merged[(merged['event_time'] >=-9) & (merged['event_time'] <=9)]
 
 # 5. 시각화
-plt.figure(figsize=(10,6))
-plt.plot(merged_filterling['event_time'], merged_filterling['treated_rate'], label='Policy', marker='o', color='teal')
-plt.plot(merged_filterling['event_time'], merged_filterling['control_rate'], label='General', marker='s', color='indianred')
-plt.axvline(x=-1, color='black', linestyle='--', label='Treatement line')
-
-plt.title('Comparison of changes in delinquency rates based on event time (policy funds vs. general funds)')
-plt.xlabel('EventTime (Difference from the time of loan)')
-plt.ylabel('delinquency rate')
-plt.legend()
-plt.grid(True)
-plt.xticks(merged_filterling['event_time'])
-plt.tight_layout()
-plt.show()
 
 
 # 시각화 (parallel Trend 회귀계수 비교 )
@@ -828,6 +817,7 @@ plt.show()
 coef_treatment = results.params['interaction_term']
 conf_int_treatment = results.conf_int().loc['interaction_term']
 
+"""
 plt.figure(figsize=(6,4))
 plt.bar(['Treatment'], [coef_treatment], yerr=[[coef_treatment - conf_int_treatment[0]], [conf_int_treatment[1] - coef_treatment]],
         color='skyblue', capsize=10)
@@ -835,7 +825,7 @@ plt.ylabel('Coefficient Estimate')
 plt.title('DiD Regression Estimate (Treatment Effect)')
 plt.axhline(0, color='gray', linestyle='--')
 plt.show()
-
+"""
 
 
 #############################################################################
@@ -1017,6 +1007,8 @@ fig.show()
 # 2-7) 정책금융 상품 한정 연체율 표시 (version3 정책금융 이용차주 한정 기준)
 # ===============================================================
 
+
+""""
 # ------------------------------------
 # 2-1) 차입자의 운영 사업체 개수 파이플롯 시각화   
 # ------------------------------------
@@ -1090,7 +1082,6 @@ fig.update_layout(
 fig.show()
 
 
-"""
 df_34 = df_차주_대출_신용카드_연체정보_그외[df_차주_대출_신용카드_연체정보_그외['BTH_SECTION'] == "~34"]
 df_34 = df_34[['AMT']]
 df_50 = df_차주_대출_신용카드_연체정보_그외[df_차주_대출_신용카드_연체정보_그외['BTH_SECTION'] == "~50"]
@@ -1105,8 +1096,7 @@ plt.hist(df_50, color='orange', alpah = 0.2, bins = 100000, label ='~50', densit
 plt.hist(df_64, color='yellow', alpah = 0.2, bins = 100000, label ='~64', density=True)
 
 plt.legend()
-plt.show()"
-"""
+plt.show()
 
 # --------------------------------------------------
 # 2-3) 연령구간별 개인대출과목 분포 트리맵 시각화
@@ -1175,12 +1165,12 @@ fig.show()
 # --------------------------------------------------
 # 2-4) 기업의 대출분포
 # --------------------------------------------------
-df_기업대출정보['LN_CD'] = df_기업대출정보['LN_CD'].astype(str)
+df_기업대출정보['LN_CD_2'] = df_기업대출정보['LN_CD_2'].astype(str)
 
 df_기업대출정보_최종  = (
     df_기업대출정보[df_기업대출정보['JOIN_SN_TYP'] ==1]
       .sort_values(['YM'],ascending=True) 
-      .groupby(['JOIN_SN','COM_SN','LN_CD'], as_index=False)  # 그룹핑
+      .groupby(['JOIN_SN','COM_SN','LN_CD_2'], as_index=False)  # 그룹핑
       .tail(1)  # 각 그룹에서 마지막 row (최신 월)
 )
 
@@ -1190,13 +1180,13 @@ df_차주.info()
 df_차주_기업대출정보 = df_차주_연령구간화.merge(df_기업대출정보_최종,on=['JOIN_SN','JOIN_SN_TYP'], how='left')
 
 # 연령구간별 기업대출과목 코드 시각화 (기업대출과목코드 - LN_ACCT_CD)
-df_차주_기업대출정보_집계 = df_차주_기업대출정보.groupby(['BTH_SECTION', 'LN_CD'])['LN_AMT'].sum().reset_index()
+df_차주_기업대출정보_집계 = df_차주_기업대출정보.groupby(['BTH_SECTION', 'LN_CD_2'])['LN_AMT'].sum().reset_index()
 df_차주_기업대출정보_집계 = df_차주_기업대출정보_집계[df_차주_기업대출정보_집계['LN_AMT'] >0]
 
 df_차주_기업대출정보_집계.info()
 df_차주_기업대출정보_집계.head(100)
 
-df_차주_기업대출정보_집계['LN_CD_NM'] = df_차주_기업대출정보_집계['LN_CD'].map(CommonCode.LN_ACCT_CD)
+df_차주_기업대출정보_집계['LN_CD_NM'] = df_차주_기업대출정보_집계['LN_CD_2'].map(CommonCode.LN_ACCT_CD)
 df_차주_기업대출정보_집계['LN_CD_NM'] = df_차주_기업대출정보_집계['LN_CD_NM'].astype('category')
 df_차주_기업대출정보_집계.info()
 
@@ -1395,3 +1385,5 @@ fig.show()
 
 
 df_차주_정책금융이용_연체정보.info()
+
+"""
