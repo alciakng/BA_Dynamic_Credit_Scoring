@@ -212,7 +212,7 @@ def show_performance_summary(model,columns,X_test,y_test,y_pred_proba):
 
     # ✅ 텍스트 색상과 크기 설정 (모든 셀 텍스트 → 검정색)
     fig.update_traces(
-        textfont=dict(color='black', size=16)
+        textfont=dict(color='black', size=17)
     )
 
     fig.update_layout(
