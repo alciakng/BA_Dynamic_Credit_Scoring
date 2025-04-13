@@ -102,18 +102,10 @@ class DatasetBuilder:
         self.df_개인대출정보_대부업권 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['개인대출정보(대부업)']))
         self.df_신용카드개설정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['신용카드개설정보']))
         self.df_신용카드이용정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['신용카드이용정보']))
-        self.df_채무보증정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['채무보증정보']))
         self.df_기업대출정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['기업대출정보']))
-        self.df_기술신용평가정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['기술신용평가정보']))
-        self.df_기술신용대출정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['기술신용대출정보']))
         self.df_보험계약관계자정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['보험계약관계자정보']))
         self.df_보험계약정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['보험계약정보']))
-        self.df_보험담보정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['보험담보정보']))
-        self.df_청구사고정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['청구사고정보']))
-        self.df_청구계약정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['청구계약정보']))
-        self.df_청구지급사유정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['청구지급사유정보']))
-        self.df_청구지급상세사유정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['청구지급상세사유정보']))
-        self.df_청구피해자물정보 = pd.read_csv(os.path.join(datset_dir, self.dataset_json['청구피해자물정보']))
+
 
     ############################################################
     #  함수 : 표준산업분류(KIC) 10차코드 Load 
