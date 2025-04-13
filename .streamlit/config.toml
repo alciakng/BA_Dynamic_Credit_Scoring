@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+primaryColor="#3C8DBC"               # 푸른빛 포인트 컬러 (버튼 등)
+backgroundColor="#0D1B2A"            # 거의 검은 네이비 배경
+secondaryBackgroundColor="#1B263B"   # 약간 밝은 서브 배경
+textColor="#E0E1DD"                  # 밝은 회색 계열 글자
+font="sans serif"

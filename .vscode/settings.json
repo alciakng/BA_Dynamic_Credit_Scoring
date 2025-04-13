@@ -1,7 +1,8 @@
 {
     "jupyter.interactiveWindow.textEditor.autoMoveToNextCell": true,
     "interactiveWindow.executeWithShiftEnter": false,
-    "python.REPL.sendToNativeREPL": true,
+    "python.REPL.sendToNativeREPL": false,
     "python.REPL.enableREPLSmartSend": true,
-    "jupyter.interactiveWindow.notebookRepl": true
+    "jupyter.interactiveWindow.notebookRepl": true,
+    "python.REPL.provideVariables": true
 }

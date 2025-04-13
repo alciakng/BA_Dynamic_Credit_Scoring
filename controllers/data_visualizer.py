@@ -143,6 +143,9 @@ class DataVisualizer:
     def multi_scatter(self, df1, df2, x, y, x_axis_title, y_axis_title, df1_name, df2_name):
         fig = go.Figure()
 
+        df1['YM'] = df1['YM'].astype('str')
+        df2['YM'] = df2['YM'].astype('str')
+
         # 기준
         fig.add_trace(go.Scatter(
             x=df1[x],
@@ -165,12 +168,13 @@ class DataVisualizer:
 
         # 레이아웃 설정
         fig.update_layout(
-            title='({df1_name} vs {df2_name})',
+            title=df1_name+", "+df2_name +"연체율 추이",
             xaxis_title=x_axis_title,
             yaxis_title=y_axis_title,
             xaxis=dict(tickmode='array', tickvals=df1['YM']),
             legend=dict(title='Group'),
             template='simple_white',
+            xaxis_tickangle=-45,
             height=500
         )
 

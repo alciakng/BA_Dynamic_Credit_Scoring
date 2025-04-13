@@ -2,6 +2,7 @@ import streamlit as st
 import yaml
 import hashlib
 
+from ui.main_section import main_section
 # -------------------------------------------------------------
 #  로그인 Section
 # -------------------------------------------------------------
@@ -28,7 +29,6 @@ def login():
         if username in users and users[username]['password'] == hashed_input:
             st.session_state['logged_in'] = True
             st.session_state['username'] = username
-            st.sidebar.success(f"{username}님 환영합니다!")
             st.rerun()
             return
         else:
@@ -40,5 +40,18 @@ def ensure_login():
         st.session_state['logged_in'] = False
 
     if not st.session_state['logged_in']:
+        ## 앱제목
+        st.markdown(
+        """
+        <div style='text-align: center; padding-top: 100px;'>
+            <h1 style='font-size: 35px; font-weight: 800;'>
+                🚀 <span style='color: #4CAF50;'>Dynamic</span> Credit Scoring System
+            </h1>
+            <h3 style='margin-top: -10px; color: gray;'>- 이종집단 비교 신용평가 모델링</h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+        )
+
         login()
         st.stop()  # 로그인 안 됐으면 여기서 렌더 중단

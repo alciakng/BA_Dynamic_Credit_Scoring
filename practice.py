@@ -1,7 +1,10 @@
+from sklearn.calibration import expit
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import ConfusionMatrixDisplay, auc, confusion_matrix, roc_auc_score, roc_curve
 import streamlit as st
 from datetime import datetime
 from matplotlib import ticker
-import seaborn as sns 
+import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd 
@@ -9,12 +12,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import statsmodels.formula.api as smf
+import scipy.stats as stats
+from scipy.stats import ks_2samp
+from imblearn.over_sampling import SMOTE
 import os
 
 import lightgbm as lgb
 import shap
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
 
 from common_code import CommonCode
 from linearmodels.panel import PanelOLS
@@ -23,26 +29,26 @@ from linearmodels.panel import PanelOLS
 # 모든컬럼 확인 옵션 
 pd.set_option('display.max_columns', None) 
 
-df_차주 = pd.read_csv("./dataset/차주정보.csv")
-df_기업개요정보 = pd.read_csv("./dataset/기업개요정보.csv")
-df_연체정보_신용도판단정보= pd.read_csv("./dataset/연체정보(신용도판단정보).csv")
-df_연체정보_공공정보 = pd.read_csv("./dataset/연체정보(공공정보).csv")
-df_개인대출정보_금융권 = pd.read_csv("./dataset/개인대출정보(금융권).csv")
-df_개인대출정보_대부업권 = pd.read_csv("./dataset/개인대출정보(대부업).csv")
-df_신용카드개설정보 = pd.read_csv("./dataset/신용카드개설정보.csv")
-df_신용카드이용정보 = pd.read_csv("./dataset/신용카드이용정보.csv")
-df_채무보증정보 = pd.read_csv("./dataset/채무보증정보.csv")
-df_기업대출정보 = pd.read_csv("./dataset/기업대출정보.csv")
-df_기술신용평가정보 = pd.read_csv("./dataset/기술신용평가정보.csv")
-df_기업개요정보기술신용대출정보 = pd.read_csv("./dataset/기술신용대출정보.csv")
-df_보험계약관계자정보 = pd.read_csv("./dataset/보험계약관계자정보.csv")
-df_보험계약정보 = pd.read_csv("./dataset/보험계약정보.csv")
-df_보험담보정보 = pd.read_csv("./dataset/보험담보정보.csv")
-df_청구사고정보 = pd.read_csv("./dataset/청구사고정보.csv")
-df_청구계약정보 = pd.read_csv("./dataset/청구계약정보.csv")
-df_청구지급사유정보 = pd.read_csv("./dataset/청구지급사유정보.csv")
-df_청구지급상세사유정보 = pd.read_csv("./dataset/청구지급상세사유정보.csv")
-df_청구피해자물정보 = pd.read_csv("./dataset/청구피해자물정보.csv")
+df_차주 = pd.read_csv("./data/차주정보.csv")
+df_기업개요정보 = pd.read_csv("./data/기업개요정보.csv")
+df_연체정보_신용도판단정보= pd.read_csv("./data/연체정보(신용도판단정보).csv")
+df_연체정보_공공정보 = pd.read_csv("./data/연체정보(공공정보).csv")
+df_개인대출정보_금융권 = pd.read_csv("./data/개인대출정보(금융권).csv")
+df_개인대출정보_대부업권 = pd.read_csv("./data/개인대출정보(대부업).csv")
+df_신용카드개설정보 = pd.read_csv("./data/신용카드개설정보.csv")
+df_신용카드이용정보 = pd.read_csv("./data/신용카드이용정보.csv")
+df_채무보증정보 = pd.read_csv("./data/채무보증정보.csv")
+df_기업대출정보 = pd.read_csv("./data/기업대출정보.csv")
+df_기술신용평가정보 = pd.read_csv("./data/기술신용평가정보.csv")
+df_기업개요정보기술신용대출정보 = pd.read_csv("./data/기술신용대출정보.csv")
+df_보험계약관계자정보 = pd.read_csv("./data/보험계약관계자정보.csv")
+df_보험계약정보 = pd.read_csv("./data/보험계약정보.csv")
+df_보험담보정보 = pd.read_csv("./data/보험담보정보.csv")
+df_청구사고정보 = pd.read_csv("./data/청구사고정보.csv")
+df_청구계약정보 = pd.read_csv("./data/청구계약정보.csv")
+df_청구지급사유정보 = pd.read_csv("./data/청구지급사유정보.csv")
+df_청구지급상세사유정보 = pd.read_csv("./data/청구지급상세사유정보.csv")
+df_청구피해자물정보 = pd.read_csv("./data/청구피해자물정보.csv")
 
 
 # 한국표준산업분류(KIC) 10차 코드 
@@ -179,10 +185,11 @@ print(df_대출정보.info())
 # 자료의 범위
 print(df_대출정보['YM'].min(),df_대출정보['YM'].max())
 
+
 # ---------------------------
 # 1-2) 차주+대출집계정보 병합
 # ---------------------------
-
+"""
 # 대출정보_집계
 df_대출정보_보유기관_집계 = df_대출정보.groupby(['JOIN_SN','YM'])['COM_SN'].count().reset_index(name='COM_SN_COUNT')
 df_대출정보_대출과목_집계 = df_대출정보.groupby(['JOIN_SN','YM'])['LN_CD_1'].count().reset_index(name='LN_CD_COUNT')
@@ -203,7 +210,7 @@ df_차주_대출정보_집계 = df_차주.merge(df_대출정보_집계,on='JOIN_
 
 df_차주_대출정보_집계[['최소보유건수','최대보유건수','최소대출건수','최대대출건수']] = df_차주_대출정보_집계[['최소보유건수','최대보유건수','최소대출건수','최대대출건수']].fillna(0)
 ####################차주+대출정보 집계 테이블 완성#######################
-
+"""
 # ---------------------------
 # 1-3) 신용도판단정보+공공정보 병합 
 # ---------------------------
@@ -239,10 +246,9 @@ df_연체정보_최종.info()
 # --------------------------------------------------------------------
 # 1-4) 대출정보+신용카드이용정보 통합
 # --------------------------------------------------------------------
+"""
 df_대출정보.info()
 df_신용카드이용정보.info()
-
-df_신용카드이용정보
 
 # 대출정보와 신용카드 이용정보의 금액을 같은이름으로 통일 
 df_대출정보_AMT= df_대출정보.rename(columns={'LN_AMT': 'AMT'})
@@ -338,8 +344,7 @@ df_차주_대출_신용카드_연체정보.info()
 
 df_차주_대출_신용카드_연체정보[['YM','SCTR_CD','COM_SN','IS_ME','AMT','DLQ_RGST_AMT','DLQ_AMT']] = df_차주_대출_신용카드_연체정보[['YM','SCTR_CD','COM_SN','IS_ME','AMT','DLQ_RGST_AMT','DLQ_AMT']].fillna(0)
 df_차주_대출_신용카드_연체정보['대출신용카드구분'].fillna('미보유',inplace=True)
-
-
+"""
 
 #############################################################################
 # Section3. 분석을 위한 독립변수, 종속변수 설정 
@@ -393,6 +398,7 @@ df_대출정보_독립변수_집계 = df_연체정보_대출정보_최종_필터
     대출금액합=("LN_AMT", "sum")
 ).reset_index()
 
+
 # ----------------------------------------------------------------------
 # 2) 지급능력 독립변수 설정 (지급능력 점수 = 신용카드이용한도*0.85 + 현금서비스한도*0.15)
 # ----------------------------------------------------------------------
@@ -417,6 +423,8 @@ df_지급능력_독립변수_집계 = df_신용카드이용정보_연체정보_�
 ).reset_index()
 
 df_지급능력_독립변수_집계.info()
+
+
 
 # ----------------------------------------------------------------------
 # 3) 보험정보 독립변수 설정 (차주별 보험가입건수, 월 납입보험료, 청구사고건수)
@@ -467,7 +475,7 @@ df_보험계약정보_독립변수_집계 = df_보험계약정보_연체정보_�
 ).reset_index()
 
 # ----------------------------------------------------------------------
-# 4) 연체정보 독립변수 생성 (연체건수, 장기연체건수, 연체금액, 과거도산경험)
+# 4) 연체정보 독립변수 생성 (연체건수, 장기연체건수, 연체금액)
 # ----------------------------------------------------------------------
 df_연체정보_기관별_연체날짜별_집계  = (
     df_연체정보.sort_values(['YM'],ascending=True)  # 월 오름차순 정렬
@@ -589,7 +597,6 @@ result_usg['신용카드_사용률_증가량'] = result_usg["최근3개월_신�
 result_ca['현금서비스_사용률_증가량'] = result_ca["최근3개월_현금서비스사용률"] - result_ca["9개월_3개월이전_현금서비스사용률"]
 
 df_소비성향_독립변수_집계 = pd.merge(result_usg,result_ca,on=(["JOIN_SN","JOIN_SN_TYP"]), how="outer")
-df_소비성향_독립변수_집계.fillna(0,inplace=True)
 
 
 #############################################################################
@@ -598,7 +605,7 @@ df_소비성향_독립변수_집계.fillna(0,inplace=True)
 # 2) Parallel Trend Assumption 분석
 # 3) DID 분석
 #############################################################################
-
+""""
 # -------------------------------------------------------------------------------------------------------------
 # 1) 집단분리
 # -------------------------------------------------------------------------------------------------------------
@@ -818,16 +825,16 @@ coef_treatment = results.params['interaction_term']
 conf_int_treatment = results.conf_int().loc['interaction_term']
 
 """
-plt.figure(figsize=(6,4))
-plt.bar(['Treatment'], [coef_treatment], yerr=[[coef_treatment - conf_int_treatment[0]], [conf_int_treatment[1] - coef_treatment]],
-        color='skyblue', capsize=10)
-plt.ylabel('Coefficient Estimate')
-plt.title('DiD Regression Estimate (Treatment Effect)')
-plt.axhline(0, color='gray', linestyle='--')
-plt.show()
+##plt.figure(figsize=(6,4))
+##plt.bar(['Treatment'], [coef_treatment], yerr=[[coef_treatment - conf_int_treatment[0]], [conf_int_treatment[1] - coef_treatment]],
+##        color='skyblue', capsize=10)
+##plt.ylabel('Coefficient Estimate')
+##plt.title('DiD Regression Estimate (Treatment Effect)')
+##plt.axhline(0, color='gray', linestyle='--')
+##plt.show()
 """
 
-
+"""
 #############################################################################
 # Section5. 전략적 연체자 예측을 위한 feature engineering & 모델 개발 
 # 1) 독립변수 병합 
@@ -836,98 +843,226 @@ plt.show()
 #############################################################################
 
 # 0) post 데이터만 선별 
-df_대출정보_DID_post = df_대출정보_DID[df_대출정보_DID['post'] ==1]
+#df_대출정보_DID_post = df_대출정보_DID[df_대출정보_DID['post'] ==1]
 
 # 1) 독립변수 병합
-df_예측모델링 = df_대출정보_DID.merge(df_대출정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_지급능력_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_보험계약정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_연체정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_신용카드정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_소비성향_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left")
+df_예측모델링 = df_대출정보.merge(df_대출정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_지급능력_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_보험계약정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_연체정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_신용카드정보_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left").merge(df_소비성향_독립변수_집계, on=['JOIN_SN','JOIN_SN_TYP'], how="left")
 
-# 2) 결측치처리 (모의데이터 성격상 데이터가 매우 부족해 랜덤배정으로 처리하였음)
-def fill_by_policy(row, col, col_min, col_max, col_mean, col_median):
-    if pd.notna(row[col]):
-        return row[col]  # 결측 아님 → 그대로
-    if ((row["정책금융여부"] == 1) & (col in ["최근3개월_신용카드사용률","보험건수","보험월납입액"])):
-        # 최대값에 가까운 범위에서 랜덤 (예: 상위 25% 구간)
-        if col in ["보험건수","보험월납입액"] :
-          return np.random.randint(low=col_median, high=col_median+col_max*0.7)
-        else : 
-          return np.random.uniform(low=col_median, high=col_median+col_max*0.7)
+
+def fill_missing_skewed(df, target_col, min_val, max_val, dtype='int'):
+    """
+    벡터화 기반 빠른 결측치 대체
+    - target_col: 결측치 대상 컬럼
+    - ln_cd_col: 대출코드 컬럼명
+    - group_col: '기업개인구분'
+    - ln_cd_dist: 사전 생성된 분포 딕셔너리
+    - min_val, max_val: 스케일 범위
+    """
+    mask = df[target_col].isna()
+    df_missing = df.loc[mask].copy()
+    n_missing = len(df_missing)
+
+    if n_missing == 0:
+        return df
+
+    # 결과 저장용 배열
+    result = np.empty(n_missing)
+    a, b = round(np.random.uniform(1.0, 2.5), 2), round(np.random.uniform(6.5, 8.0), 2)
+
+    # 필요한 개수만큼 한번에 샘플링
+    samples = stats.beta.rvs(a, b, size=n_missing)
+    scaled = min_val + samples * (max_val - min_val)
+
+    if dtype == 'int':
+        result = np.round(scaled).astype(int)
     else:
-        # 평균 근처에서 랜덤
-        if col in ["보험건수","대출금액합","보험월납입액","대출건수","지급능력","보험월납입액"] :
-          return np.random.randint(low=col_min, high=col_median+col_max*0.2)
-        elif col in ["장기고액대출건수"] :
-          return np.random.randint(low=col_min, high=col_max)
-        else : 
-          return np.random.uniform(low=col_min, high=col_max)
+        result = scaled
+
+    # 결측치 채우기
+    df.loc[mask, target_col] = result
+    return df
+
+# 대출건수 결측치 대체 
+min_val = df_예측모델링['대출건수'].min()
+max_val = df_예측모델링['대출건수'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'대출건수',min_val,max_val,dtype='int')
+
+df_예측모델링.info()
 
 
-policy_cnt = len(df_예측모델링[df_예측모델링['정책금융여부']==1])
-general_cnt = len(df_예측모델링[df_예측모델링['정책금융여부']==0])
+# 장기고액대출건수 결측치 대체 
+min_val = df_예측모델링['장기고액대출건수'].min()
+max_val = df_예측모델링['장기고액대출건수'].max()
 
-#장기고액대출건수 결측치 대체
-values = [0, 1, 2, 3]
-general_probs = [0.966, 0.025, 0.005, 0.004]
-policy_probs = [0.920, 0.045, 0.023, 0.012]
+print(min_val)
+print(max_val)
 
-df_예측모델링.loc[df_예측모델링['정책금융여부'] == 0,'장기고액대출건수'] = np.random.choice(values, size=general_cnt, p=general_probs)
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==1,'장기고액대출건수'] = np.random.choice(values, size=policy_cnt, p=policy_probs)
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'장기고액대출건수',min_val,max_val,dtype='int')
+
+df_예측모델링.info()
+
+# 대출금액합 결측치 대체 
+min_val = df_예측모델링['대출금액합'].min()
+max_val = df_예측모델링['대출금액합'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'대출금액합',min_val,max_val,dtype='int')
+
+# 지급능력 결측치 대체 
+min_val = df_예측모델링['지급능력'].min()
+max_val = df_예측모델링['지급능력'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'지급능력',min_val,max_val,dtype='int')
+
+# 보험건수 결측치 대체 
+min_val = df_예측모델링['보험건수'].min()
+max_val = df_예측모델링['보험건수'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'보험건수',min_val,max_val,dtype='int')
+
+# 보험월납입액 결측치 대체 
+min_val = df_예측모델링['보험월납입액'].min()
+max_val = df_예측모델링['보험월납입액'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'보험월납입액',min_val,max_val,dtype='int')
+
+# 신용카드개수 결측치 대체 
+min_val = df_예측모델링['신용카드개수'].min()
+max_val = df_예측모델링['신용카드개수'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'신용카드개수',min_val,max_val,dtype='int')
+
+# 장기연체건수 결측치 대체
+min_val = df_예측모델링['장기연체건수'].min()
+max_val = df_예측모델링['장기연체건수'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'장기연체건수',min_val,max_val,dtype='int')
+
+# 연체금액합 결측치 대체
+min_val = df_예측모델링['연체금액합'].min()
+max_val = df_예측모델링['연체금액합'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'연체금액합',min_val,max_val,dtype='int')
+
+# 연체건수 결측치 대체
+min_val = df_예측모델링['연체건수'].min()
+max_val = df_예측모델링['연체건수'].max()
+
+print(min_val)
+print(max_val)
+
+df_예측모델링.info()
+
+df_예측모델링 = fill_missing_skewed(df_예측모델링,'연체건수',min_val,max_val,dtype='int')
 
 #최근3개월_신용카드사용률
 values = [0.23, 0.45, 0.67, 0.72]
 general_probs = [0.966, 0.025, 0.005, 0.004]
-policy_probs = [0.720, 0.183, 0.083, 0.014]
 
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==0,'최근3개월_신용카드사용률'] = np.random.choice(values, size=general_cnt, p=general_probs)
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==1,'최근3개월_신용카드사용률'] = np.random.choice(values, size=policy_cnt, p=policy_probs)
+df_예측모델링['최근3개월_신용카드사용률'] = np.random.choice(values, size=len(df_예측모델링), p=general_probs)
 
 ##9개월_3개월이전_신용카드사용률
 values = [0.23, 0.45, 0.67, 0.72]
 general_probs = [0.966, 0.025, 0.005, 0.004]
-policy_probs = [0.966, 0.025, 0.005, 0.004]
 
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==0,'9개월_3개월이전_신용카드사용률'] = np.random.choice(values, size=general_cnt, p=general_probs)
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==1,'9개월_3개월이전_신용카드사용률'] = np.random.choice(values, size=policy_cnt, p=policy_probs)
-
+df_예측모델링['9개월_3개월이전_신용카드사용률'] = np.random.choice(values, size=len(df_예측모델링), p=general_probs)
 
 #최근3개월_현금서비스사용률
 values = [0, 0.02, 0.03, 0.04]
 general_probs = [0.966, 0.025, 0.005, 0.004]
-policy_probs = [0.720, 0.183, 0.083, 0.014]
 
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==0,'최근3개월_현금서비스사용률'] = np.random.choice(values, size=general_cnt, p=general_probs)
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==1,'최근3개월_현금서비스사용률'] = np.random.choice(values, size=policy_cnt, p=policy_probs)
+df_예측모델링['최근3개월_현금서비스사용률'] = np.random.choice(values, size=len(df_예측모델링), p=general_probs)
 
 #9개월_3개월이전_현금서비스사용률
 values = [0, 0.02, 0.03, 0.04]
 general_probs = [0.966, 0.025, 0.005, 0.004]
-policy_probs = [0.966, 0.025, 0.005, 0.004]
 
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==0,'9개월_3개월이전_현금서비스사용률'] = np.random.choice(values, size=general_cnt, p=general_probs)
-df_예측모델링.loc[df_예측모델링['정책금융여부'] ==1,'9개월_3개월이전_현금서비스사용률'] = np.random.choice(values, size=policy_cnt, p=policy_probs)
-
-
-target_cols = ["대출건수", "대출금액합", "지급능력", "보험건수", "보험월납입액","신용카드개수","장기연체건수","연체금액합","연체건수"]
-
-for col in target_cols:
-    col_min = df_예측모델링[col].min(skipna=True)
-    col_max = df_예측모델링[col].max(skipna=True)
-    col_mean = df_예측모델링[col].mean(skipna=True)
-    col_median = df_예측모델링[col].median(skipna=True)
-
-    df_예측모델링[col] = df_예측모델링.apply(lambda row: fill_by_policy(row, col, col_min, col_max, col_mean, col_median), axis=1)
+df_예측모델링['9개월_3개월이전_현금서비스사용률'] = np.random.choice(values, size=len(df_예측모델링), p=general_probs)
 
 df_예측모델링['신용카드_사용률_증가량'] = df_예측모델링['최근3개월_신용카드사용률'] - df_예측모델링['9개월_3개월이전_신용카드사용률']
 df_예측모델링['현금서비스_사용률_증가량'] = df_예측모델링['최근3개월_현금서비스사용률'] - df_예측모델링['9개월_3개월이전_현금서비스사용률']
-df_예측모델링["지급능력"].info()
 
-df_예측모델링['장기연체건수'].isna()
+df_예측모델링.info()
+
+def generate_dlq_by_loan_type(df: pd.DataFrame, features: list, seed: int = 42, beta_scale: float = 1.5):
+    np.random.seed(seed)
+    
+    # 1. 대출코드 조합 생성
+    df['__LN_KEY__'] = df[['LN_CD_1','LN_CD_2','LN_CD_3']].astype(str).agg('-'.join, axis=1)
+    ln_keys = df['__LN_KEY__'].unique()
+    
+    # 2. feature scaling
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df[features])
+    
+    # 3. 대출조합별로 서로 다른 β벡터 설정
+    beta_map = {
+        key: np.random.randn(len(features)) * beta_scale
+        for key in ln_keys
+    }
+
+    # 4. 연체확률 계산
+    probs = np.zeros(len(df))
+    for key in ln_keys:
+        mask = df['__LN_KEY__'] == key
+        beta = beta_map[key]
+        logits = X_scaled[mask] @ beta
+        probs[mask] = expit(logits)
+
+    # 5. 연체여부 생성
+    dlq = np.random.binomial(1, probs)
+
+    # 6. 결과 저장
+    df['DLQ_Prob'] = probs
+    df['DLQ_YN'] = dlq
+
+    # 8. 정리
+    df.drop(columns='__LN_KEY__', inplace=True)
+
+features = [
+    '대출건수', '장기고액대출건수', '대출금액합', '지급능력',
+    '보험건수', '보험월납입액', '연체건수', '장기연체건수', '연체금액합',
+    '신용카드개수', '신용카드_사용률_증가량', '현금서비스_사용률_증가량'
+]    
+
+generate_dlq_by_loan_type(df_예측모델링,features)
+
+df_예측모델링['지급능력'].value_counts()
+df_예측모델링['지급능력_구간'] = pd.qcut(df_예측모델링['지급능력'], q=10, labels=False, duplicates='drop')
+
+df_예측모델링.info()
+
 
 # ===============================================================
 # 정책자금집단, 일반자금집단의 lightgbm 모델학습
 # ===============================================================
 
-df_general= df_예측모델링[df_예측모델링['정책금융여부']==0] 
-df_policy = df_예측모델링[df_예측모델링['정책금융여부']==1] 
+df_general= df_예측모델링[df_예측모델링['LN_CD_2']=='100'] 
+df_policy = df_예측모델링[df_예측모델링['LN_CD_2']=='150'] 
 
 # 1. 변수 정의
 features = [
@@ -943,15 +1078,226 @@ X_gen_train, X_gen_test, y_gen_train, y_gen_test = train_test_split(
 X_pol_train, X_pol_test, y_pol_train, y_pol_test = train_test_split(
     df_policy[features], df_policy[target], test_size=0.2, random_state=42)
 
+# ✅ 2. 오버샘플링 (SMOTE)
+smote = SMOTE(random_state=42)
 
-df_예측모델링['신용카드개수'].isna()
 
-# 4. 모델 학습
-model_gen = lgb.LGBMClassifier(random_state=42)
-model_pol = lgb.LGBMClassifier(random_state=42)
+X_gen_train_res, y_gen_train_res = smote.fit_resample(X_gen_train, y_gen_train)
+X_pol_train_res, y_pol_train_res = smote.fit_resample(X_pol_train, y_pol_train)
 
-model_gen.fit(X_gen_train, y_gen_train)
-model_pol.fit(X_pol_train, y_pol_train)
+# ✅ 3. 하이퍼파라미터 튜닝 (RandomizedSearchCV)
+param_grid = {
+    'n_estimators': [100, 200],
+    'learning_rate': [0.05, 0.1],
+    'num_leaves': [15, 31],
+    'max_depth': [3, 5],
+    'min_child_samples': [10, 20],
+    'subsample': [0.8],
+    'colsample_bytree': [0.8]
+}
+
+clf_gen = RandomizedSearchCV(
+    estimator=lgb.LGBMClassifier(random_state=42),
+    param_distributions=param_grid,
+    n_iter=3,  # 탐색 횟수
+    cv=2,
+    scoring='roc_auc',
+    verbose=1,
+    random_state=42,
+    n_jobs=-1
+)
+
+clf_pol = RandomizedSearchCV(
+    estimator=lgb.LGBMClassifier(random_state=42),
+    param_distributions=param_grid,
+    n_iter=3,
+    cv=2,
+    scoring='roc_auc',
+    verbose=1,
+    random_state=42,
+    n_jobs=-1
+)
+
+# ✅ 4. 모델 학습
+clf_gen.fit(X_gen_train_res, y_gen_train_res)
+clf_pol.fit(X_pol_train_res, y_pol_train_res)
+
+# 예측 확률
+y_gen_proba = clf_gen.predict_proba(X_gen_test)[:, 1]
+y_pol_proba = clf_pol.predict_proba(X_pol_test)[:, 1]
+
+# ROC 계산
+fpr_base, tpr_base, _ = roc_curve(y_gen_test, y_gen_proba)
+roc_auc_base = auc(fpr_base, tpr_base)
+
+fpr_comp, tpr_comp, _ = roc_curve(y_pol_test, y_pol_proba)
+roc_auc_comp = auc(fpr_comp, tpr_comp)
+
+# ROC 커브 그리기 
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(x=fpr_base, y=tpr_base,
+                         mode='lines',
+                         name=f'Base Model (AUC = {roc_auc_base:.2f})'))
+
+fig.add_trace(go.Scatter(x=fpr_comp, y=tpr_comp,
+                         mode='lines',
+                         name=f'Comp Model (AUC = {roc_auc_comp:.2f})'))
+
+fig.add_trace(go.Scatter(x=[0, 1], y=[0, 1],
+                         mode='lines',
+                         line=dict(dash='dash'),
+                         name='Random (AUC = 0.50)'))
+
+fig.update_layout(
+    title='ROC Curve (Plotly)',
+    xaxis_title='False Positive Rate',
+    yaxis_title='True Positive Rate',
+    width=800,
+    height=600,
+    legend=dict(x=0.6, y=0.05),
+    template='plotly_white'
+)
+
+fig.show()
+
+# =============
+# 혼동행렬 시각화 
+# =============
+# 예측 및 혼동행렬
+# 예측 및 confusion matrix
+y_pred_base = clf_gen.predict(X_gen_test)
+# 혼동행렬 생성 시 레이블 순서 지정 (True=1이 먼저 오게)
+# confusion matrix
+cm = confusion_matrix(y_gen_test, y_pred_base, labels=[1,0])
+cm_percent = cm / cm.sum() * 100
+labels = np.array([[f"{int(cm[i, j])}<br>({cm_percent[i, j]:.1f}%)" for j in range(2)] for i in range(2)])
+
+# Plotly heatmap
+fig = go.Figure(data=go.Heatmap(
+    z=cm,
+    text=labels,
+    texttemplate="%{text}",
+    colorscale="Blues",
+    showscale=True,
+    zmin=0,
+    zmax=np.max(cm),
+    hoverinfo='text'
+))
+
+# 축 설정
+fig.update_layout(
+    title='Confusion Matrix<br><sub>(Columns: 실제, Rows: 예측)</sub>',
+    xaxis=dict(
+        title='실제 값 (Actual)',
+        tickmode='array',
+        tickvals=[0, 1],
+        ticktext=['True (1)', 'False (0)']
+    ),
+    yaxis=dict(
+        title='예측 값 (Predicted)',
+        tickmode='array',
+        tickvals=[0, 1],
+        ticktext=['True (1)', 'False (0)'],
+        autorange='reversed'
+    ),
+    width=500,
+    height=500
+)
+
+fig.show()
+
+
+# 변수기여도
+def get_variable_performance_summary(model, X_test, y_test, y_pred_proba, columns):
+    feature_cols = columns
+    rows = []
+
+    # 전체 예측 확률 (전체 모델 기준)
+    auc_total = roc_auc_score(y_test, y_pred_proba)
+    ks_total = ks_2samp(y_pred_proba[y_test == 1], y_pred_proba[y_test == 0]).statistic
+
+    # SHAP값 계산
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer.shap_values(X_test)  
+
+    # Gain 값
+    feature_gain = model.booster_.feature_importance(importance_type='gain')
+    gain_dict = dict(zip(X_test.columns, feature_gain))
+
+    # 변수별 성능 정리
+    for i, col in enumerate(feature_cols):
+        x = X_test[col]
+        auc = roc_auc_score(y_test, x)
+        ks = ks_2samp(x[y_test == 1], x[y_test == 0]).statistic
+        shap_mean = np.abs(shap_values[:, i]).mean()
+        gain = gain_dict.get(col, 0)
+
+        rows.append({
+            '변수': col,
+            'AUC (단변수)': round(auc, 4),
+            'KS (단변수)': round(ks, 4),
+            'SHAP': round(shap_mean, 4),
+            'Gain': round(gain, 2)
+        })
+
+    # 전체 모델 기준 성능 추가
+    rows.append({
+        '변수': '전체모델',
+        'AUC (단변수)': round(auc_total, 4),
+        'KS (단변수)': round(ks_total, 4),
+        'SHAP': np.abs(shap_values).mean().round(4),
+        'Gain': np.sum(feature_gain).round(2)
+    })
+
+    return pd.DataFrame(rows)
+
+
+df_gen_summary = get_variable_performance_summary(clf_gen.best_estimator_,X_gen_test,y_gen_test,y_gen_proba,features)
+df_pol_summary = get_variable_performance_summary(clf_pol.best_estimator_,X_pol_test,y_pol_test,y_pol_proba,features)
+
+# ▶️ 전체모델 제외
+df_vis = df_gen_summary[df_gen_summary['변수'] != '전체모델'].copy()
+columns = df_vis.columns.tolist()
+
+# ▶️ 열별로 색상 계산 함수
+def get_color_scale(values, base_color='rgba(31, 119, 180, {alpha})'):
+    norm = (values - values.min()) / (values.max() - values.min() + 1e-9)
+    return [base_color.format(alpha=round(a, 2)) for a in norm]
+
+# ▶️ 셀 색상 계산
+cellcolors = []
+for col in columns:
+    if pd.api.types.is_numeric_dtype(df_vis[col]):
+        cellcolors.append(get_color_scale(df_vis[col]))  # 수치형 열은 색상 지정
+    else:
+        cellcolors.append(['white'] * len(df_vis))  # 문자형 열은 흰색
+
+# ▶️ Table 생성
+fig = go.Figure(data=[go.Table(
+    header=dict(
+        values=columns,
+        fill_color='lightblue',
+        align='center',
+        font=dict(size=12, color='black')
+    ),
+    cells=dict(
+        values=[df_vis[col] for col in columns],
+        fill_color=cellcolors,
+        align='center',
+        format=[""] + [".4f"] * (len(columns)-2) + [".2f"],
+        font=dict(size=11)
+    )
+)])
+
+fig.update_layout(
+    title='모든 수치 열 기준 색상 강조 테이블',
+    width=1100,
+    height=700
+)
+
+fig.show()
+
 
 # 5. SHAP 분석
 explainer_gen = shap.TreeExplainer(model_gen)
