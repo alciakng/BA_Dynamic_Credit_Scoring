@@ -448,8 +448,8 @@ def dynamic_condition(builder: DatasetBuilder,visualizer : DataVisualizer):
                             weight = st.slider(
                                 f"{feature} - 기여도: {float(shap_ratio[feature]):.2f}",
                                 -1.0, 
+                                2.0,
                                 1.0,
-                                0.0,
                                 0.1,
                                 key=f"slider_{feature}"
                             )
