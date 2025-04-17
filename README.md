@@ -1,4 +1,4 @@
-# 📊 BA_Financial_6
+[[팀6] 김종환-임현석-김현수 Progress Report_EDA.pdf](https://github.com/user-attachments/files/19792970/6.-.-.Progress.Report_EDA.pdf)# 📊 BA_Financial_6
 
  - 신용정보원 데이터 기반 분석 프로젝트입니다.  
  - 차주, 대출, 신용카드, 연체정보, 보험정보 등의 다양한 데이터셋을 통합합니다.
@@ -84,6 +84,6 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ## 🧠 사업기획안
 
-[[팀6] 김종환-임현석-김현수 Progress Report_사업화.pdf](https://github.com/user-attachments/files/19792961/6.-.-.Progress.Report_.pdf)
+[사업제안서.pdf](https://github.com/user-attachments/files/19792971/default.pdf)
 
 사업화 데모링크 : https://ba-finance-6.onrender.com
