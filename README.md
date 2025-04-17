@@ -84,5 +84,6 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ## 🧠 사업기획안
 
-### 4.17 Scheduled to be updated
+[[팀6] 김종환-임현석-김현수 Progress Report_사업화.pdf](https://github.com/user-attachments/files/19792961/6.-.-.Progress.Report_.pdf)
 
+사업화 데모링크 : https://ba-finance-6.onrender.com
