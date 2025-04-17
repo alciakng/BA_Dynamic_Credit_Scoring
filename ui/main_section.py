@@ -11,6 +11,10 @@ from ui.condition_section import dynamic_condition
 
 def main_section(builder, visualizer):
 
+    #based_scored 조건 초기화
+    if 'based_scored' not in st.session_state:
+        st.session_state['based_scored'] = False
+
     username = st.session_state.get('username', '사용자')
     st.sidebar.subheader(f"👋 {username}님 환영합니다!")
 
@@ -37,7 +41,7 @@ def main_section(builder, visualizer):
         st.subheader("🧮 Dynamic Credit Scoring")
 
         # 필수 세션 키가 없으면 안내
-        if not st.session_state['based_scored'] :
+        if not st.session_state.get('based_scored', False):
             # ✅ 중앙에 토스트 스타일 메시지 띄우기 (streamlit-toast 활용 or fallback)
             st.markdown("""
             <div style='
