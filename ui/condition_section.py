@@ -26,9 +26,6 @@ from ui.dashboard_section import plot_adjusted_proba_threshold_plotly
 #  Condition Section
 # -------------------------------------------------------------
 
-if 'based_scored' not in st.session_state:
-    st.session_state['based_scored'] = False
-
 def main_condition(builder,visualizer):
     st.title("비교조건 선택")
 

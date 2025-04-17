@@ -244,8 +244,9 @@ def run_scoring(builder: DatasetBuilder,visualizer : DataVisualizer, 기준_대�
         shap_df = pd.DataFrame(shap_values_base, columns=builder.선택변수)
 
         # 중요도 계산 
-        shap_importance = shap_df[builder.선택변수].abs().mean()
-        builder.shap_weight_df = (shap_importance / shap_importance.mean()).round(2)
+        shap_importance = shap_df[builder.선택변수].abs()
+        shap_importance_abs = shap_df[builder.선택변수].abs().mean()
+        builder.shap_weight_df = (shap_importance / shap_importance_abs.mean()).round(2)
 
         # 전체 예측 확률 (전체 모델 기준)
         auc_total = roc_auc_score(y_base_test, y_base_proba)
