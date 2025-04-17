@@ -44,10 +44,10 @@ def ensure_login():
         st.markdown(
         """
         <div style='text-align: center; padding-top: 100px;'>
-            <h1 style='font-size: 35px; font-weight: 800;'>
+            <h1 style='font-size: 40px; font-weight: 800;'>
                 🚀 <span style='color: #4CAF50;'>Dynamic</span> Credit Scoring System
             </h1>
-            <h3 style='margin-top: -10px; color: gray;'>- 이종집단 비교 신용평가 모델링</h3>
+            <h3 style='margin-top: -10px; color: gray;'>- 설명가능한 머신러닝(XML) 기반 신용평가 모델링</h3>
         </div>
         """,
         unsafe_allow_html=True

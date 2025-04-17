@@ -71,24 +71,30 @@ class DatasetBuilder:
         # 예측모델링을 위한 데이터프레임 
         self.df_예측모델링 = None
 
-        np.random.seed(42)
+        # css base, comp 
+        self.df_css_base = None
+        self.df_css_comp = None 
 
-        self.ln_cd_dist_기업 = {
-            str(code): {
-                "a": round(np.random.uniform(1.0, 2.5), 2),
-                "b": round(np.random.uniform(7.0, 8.0), 2)
-            }
-            for code in CommonCode.LN_ACCT_CD.keys()
-        }
+        # 모델 저장 
+        self.clf_base_model =None
 
-        self.ln_cd_dist_개인 = {
-            str(code): {
-                "a": round(np.random.uniform(1.0, 2.7), 2),
-                "b": round(np.random.uniform(6.5, 8.0), 2)
-            }
-            for code in CommonCode.LN_CD_2.keys()
-        }
+        # 선택변수 
+        self.선택변수 = None
 
+        # 최적 임계값
+        self.best_threshold = None
+
+        # shap explainer 
+        self.explainer = None 
+
+        # shap_df
+        self.shap_weight_df = None
+
+        # 변수설명 요약
+        self.df_summary_wo = None 
+
+        # df_신용평가차주
+        self.df_신용평가차주 = None
 
     def load_data(self):
         base_dir = os.path.dirname(os.path.dirname(__file__)) # 상위폴더
@@ -581,7 +587,6 @@ class DatasetBuilder:
         dlq = np.random.binomial(1, probs)
 
         # 6. 결과 저장
-        df['DLQ_Prob'] = probs
         df['DLQ_YN'] = dlq
 
         # 8. 정리

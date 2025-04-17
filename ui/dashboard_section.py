@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd 
 import shap
 import plotly.graph_objects as go
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, JsCode
 
 from scipy.stats import ks_2samp
 
@@ -127,50 +128,8 @@ def show_confusion_matrix(clf,X_test,y_test):
     st.plotly_chart(fig)
 
 
-def show_performance_summary(model,columns,X_test,y_test,y_pred_proba):
-    feature_cols = columns
-    rows = []
-
-    # 전체 예측 확률 (전체 모델 기준)
-    auc_total = roc_auc_score(y_test, y_pred_proba)
-    ks_total = ks_2samp(y_pred_proba[y_test == 1], y_pred_proba[y_test == 0]).statistic
-
-    # SHAP값 계산
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(X_test)  
-
-    # Gain 값
-    feature_gain = model.booster_.feature_importance(importance_type='gain')
-    gain_dict = dict(zip(X_test.columns, feature_gain))
-
-    # 변수별 성능 정리
-    for i, col in enumerate(feature_cols):
-        x = X_test[col]
-        auc = roc_auc_score(y_test, x)
-        ks = ks_2samp(x[y_test == 1], x[y_test == 0]).statistic
-        shap_mean = np.abs(shap_values[:, i]).mean()
-        gain = gain_dict.get(col, 0)
-
-        rows.append({
-            '변수': col,
-            'AUC (단변수)': round(auc, 4),
-            'KS (단변수)': round(ks, 4),
-            'SHAP': round(shap_mean, 4),
-            'Gain': round(gain, 2)
-        })
+def show_performance_summary(df_summary, key):
     
-    
-    # 전체 모델 기준 성능 추가
-    rows.append({
-        '변수': '전체모델',
-        'AUC (단변수)': round(auc_total, 4),
-        'KS (단변수)': round(ks_total, 4),
-        'SHAP': np.abs(shap_values).mean().round(4),
-        'Gain': np.sum(feature_gain).round(2)
-    })
-
-    df_summary = pd.DataFrame(rows)
-
     """
     fig = go.Figure(data=[go.Table(
         header=dict(
@@ -196,7 +155,6 @@ def show_performance_summary(model,columns,X_test,y_test,y_pred_proba):
     )
     """
 
-    
     # '전체모델' 행 제외하고 수치만 추출해 index를 '변수'로 설정
     df_numeric = df_summary[df_summary['변수'] != '전체모델'].set_index('변수')
 
@@ -224,4 +182,148 @@ def show_performance_summary(model,columns,X_test,y_test,y_pred_proba):
 
     st.plotly_chart(fig, use_container_width=True)
 
+    df_summary_wo = df_summary[df_summary['변수'] != '전체모델']
+    generate_variable_report_aggrid(df_summary_wo, key)
+
+
+def generate_variable_report_aggrid(df: pd.DataFrame, key):
+    """
+    변수 중요도 보고서를 AgGrid 테이블로 표시
+    """
+    report_rows = []
+
+    for _, row in df.iterrows():
+        var = row['변수']
+        auc = row['AUC (단변수)']
+        ks = row['KS (단변수)']
+        shap = row['SHAP']
+        gain = row['Gain']
+
+        # 변수 요약 문자열 생성
+        summary = f"AUC: {auc:.2f}, KS: {ks:.2f}, SHAP: {shap:.2f}, Gain: {gain:,.0f}"
+
+        # 해석 요약 로직
+        shap_level = "상대적으로 높은" if shap > 0.3 else "낮은"
+        model_contrib = f"1. 해당 변수는 모델의 성능에 '{shap_level}' 기여를 합니다."
+        univar_msg = "단변수 AUC와 KS도 안정적인 분류력을 보여줍니다." if auc > 0.4 and ks > 0.2 else "2. 단변수 중요도는 다소 낮습니다."
+
+        # 특이 케이스 추가 해석
+        extra = ""
+        has_extra = False
+        if (auc < shap) & (shap > 0.45): 
+            extra = "⚠️ 3. AUC는 낮지만 SHAP은 높음 → 변수는 비선형적/상호작용적 방식으로 중요한 기여를 합니다."
+            has_extra = True
+
+        interpretation = f"{model_contrib} \n {univar_msg} \n {extra}".strip()
+
+        report_rows.append({
+            "변수": var,
+            "변수 요약": summary,
+            "해석 요약": interpretation,
+            "has_extra": has_extra  # ✅ 조건부 색상용 플래그
+        })
+
+
+    # DataFrame으로 변환
+    report_df = pd.DataFrame(report_rows)
+
+    # ✅ 행 강조 색상 설정 (조건: has_extra == True)
+    row_style = JsCode("""
+    function(params) {
+        if (params.data.has_extra === true) {
+            return {
+                'backgroundColor': '#e8f5e9',  // 연한 초록 배경
+                'fontWeight': 'bold'
+            }
+        }
+    }
+    """)
+
+    gb = GridOptionsBuilder.from_dataframe(report_df)
+
+    gb.configure_column("변수", width=120)
+    gb.configure_column("변수 요약", width=300)
+    gb.configure_column("해석 요약", width=700)
+
+    gb.configure_default_column(wrapText=False, autoHeight=False, resizable=True)
     
+    
+    gb.configure_column("has_extra", hide=True)
+
+    gb.configure_grid_options(domLayout='normal', getRowStyle=row_style)
+    gb.configure_grid_options(domLayout='autoHeight')
+    gb.configure_default_column(autoWidth=True)
+
+    with st.expander("변수 중요도 종합보고서",expanded = True):
+        AgGrid(report_df,
+        gridOptions=gb.build(),
+        height=600,
+        width='100%',
+        data_return_mode='FILTERED_AND_SORTED',
+        update_mode=GridUpdateMode.MODEL_CHANGED,
+        fit_columns_on_grid_load=False,
+        allow_unsafe_jscode=True,
+        theme='alpine',
+        key = key)
+
+        
+
+# 차주 보정결과 시각화 
+def plot_adjusted_proba_threshold_plotly(
+    df,
+    threshold_col='대출승인_임계값',
+    orig_proba_col='예측_연체확률',
+    adjusted_proba_col='조정_연체확률'
+):
+    """
+    연체확률 시각화 (Plotly)
+    - 조정된 확률이 존재하면: 원래/보정 비교
+    - 없으면: 원래 예측만 표시
+    """
+
+    y_orig = df[orig_proba_col].values[0]
+    threshold = df[threshold_col].values[0]
+
+    fig = go.Figure()
+
+    # Always show original prediction
+    fig.add_trace(go.Bar(
+        x=["원래 예측"],
+        y=[y_orig],
+        name="원래 예측",
+        marker_color='royalblue',
+        text=[f"{y_orig:.2f}"],
+        textposition='outside'
+    ))
+
+    # If adjusted value exists, show it too
+    if adjusted_proba_col in df.columns:
+        y_adj = df[adjusted_proba_col].values[0]
+        fig.add_trace(go.Bar(
+            x=["보정 후"],
+            y=[y_adj],
+            name="보정 후",
+            marker_color='seagreen',
+            text=[f"{y_adj:.2f}"],
+            textposition='outside'
+        ))
+
+    # Add threshold line
+    fig.add_hline(
+        y=threshold,
+        line_dash="dash",
+        line_color="red",
+        annotation_text=f"임계값: {threshold:.2f}",
+        annotation_position="top left"
+    )
+
+    fig.update_layout(
+        title="연체 확률 시각화",
+        yaxis_title="연체 확률",
+        yaxis=dict(range=[0, 1.1]),
+        bargap=0.5,
+        showlegend=False,
+        height=400
+    )
+
+    return fig
