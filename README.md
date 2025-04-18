@@ -86,4 +86,4 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 [사업제안서.pdf](https://github.com/user-attachments/files/19792971/default.pdf)
 
-사업화 데모링크 : https://ba-finance-6.onrender.com
+사업화 데모링크 : [https://ba-finance-6.onrender.com]
