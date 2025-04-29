@@ -82,12 +82,13 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ---
 
-## 🧠 사업기획안
-##### 최종기획안 
-[최종기획안.pdf](https://github.com/user-attachments/files/19860627/default.pdf)
+## 시연연상
 
-##### 클라우드 배포 - 현재 서버닫혀있음
-사업화 데모링크 : [https://ba-finance-6.onrender.com]
+[![Video Label](http://img.youtube.com/vi/QAn6n9Ik5DE/0.jpg)](https://youtu.be/59USvjy2toI)
 
-##### 시연영상
-[![Vidio Label] (https://www.youtube.com/watch?v=QAn6n9Ik5DE)
+---
+
+## 사업기획안
+
+
+---
