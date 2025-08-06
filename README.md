@@ -66,7 +66,17 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ---
 
-## 사업기획안
-
-
+## 사업화 기획
+![Image](https://github.com/user-attachments/assets/de69717b-a03f-4fce-bb37-d21aafd68450)
+![Image](https://github.com/user-attachments/assets/cebd46db-b8e2-4b56-af56-ba9fd1abc1d7)
+![Image](https://github.com/user-attachments/assets/9ce2fde2-9dfc-478b-8bd5-2cbc350aaa52)
+![Image](https://github.com/user-attachments/assets/bc2bff49-0c33-4537-83db-3bfed2618e5f)
+![Image](https://github.com/user-attachments/assets/3bfd370f-53d1-4ef4-980a-f1fcc7ed16b2)
+![Image](https://github.com/user-attachments/assets/ebb12632-b131-48c8-b82c-2927494c9fa8)
+![Image](https://github.com/user-attachments/assets/fbea80bb-abf3-4448-ad50-4d1f66d949b2)
+![Image](https://github.com/user-attachments/assets/73ec8d90-4278-443f-bc7c-dc2e8c225138)
+![Image](https://github.com/user-attachments/assets/0491ac21-37da-4e77-950d-a2d2db065d6c)
+![Image](https://github.com/user-attachments/assets/d2010ee2-8283-4745-8e01-d2bb5faf1c64)
+![Image](https://github.com/user-attachments/assets/54f83a97-47ea-4678-8208-a818b0eec211)
+![Image](https://github.com/user-attachments/assets/bbdac745-35f5-4a91-a74d-d3f4e6217f0a)
 ---
