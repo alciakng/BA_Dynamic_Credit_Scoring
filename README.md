@@ -1,9 +1,8 @@
-📊 BA_Financial_6
+📊 Dynamic_Credit_Scoring
 
- - 신용정보원 데이터 기반 분석 프로젝트입니다.  
+ - 신용정보원 모의 데이터 기반 분석 프로젝트입니다.  
  - 차주, 대출, 신용카드, 연체정보, 보험정보 등의 다양한 데이터셋을 통합합니다.
- - 정책금융 차주의 전략적 연체율을 Chiappori-Salanié(양의상관성분석), DiD(이중차분분석)을 통해 식별합니다.
- - ML을 통해 전략적 연체 예측 모델을 구성하고, 가능성이 있는 차주를 식별하는 대안신용평가 모델을 기획합니다.
+ - 대안정보를 이용한 신용평가 정보를 바탕으로 심사자가 개입 및 신용평점 사후 조정(Dynamic_Credit_Scoring) 시뮬레이션 아이디어를 제시합니다.
 
 ## 📁 프로젝트 구성
 
@@ -62,29 +61,8 @@ https://docs.google.com/presentation/d/1v_GPHuICVvLx6m1Yvaqh9ZcXvozIiHZHRpG-VbFS
 
 ---
 
-## 🧪 Staggered DID 
-
-### 1) 전략적 연체율 식별을 위한 Staggered DID
-<img width="882" alt="image" src="https://github.com/user-attachments/assets/bc442d58-9700-4b0c-8a64-d08fef575620" />
-
-### 2) Pre Parallel Trend Assumption 검증
-<img width="638" alt="image" src="https://github.com/user-attachments/assets/b1b1fd34-fc1b-4fd3-824c-9372a65a1f65" />
-
----
-
-## 🧪 전략적연체에 유의한 feature 식별
-
-### 1) 각 집단의 연체율을 예측
-<img width="1159" alt="image" src="https://github.com/user-attachments/assets/a28a7f4b-bec1-488a-98ae-b10af92a6dca" />
-
-### 2) SHAP(Feature Importance) 방법론을 통해 유의한 변수식별 
-<img width="900" alt="image" src="https://github.com/user-attachments/assets/eeb5a74c-162e-4d06-97b8-9fed6d788495" />
-
----
-
 ## 시연연상
-
-[![Video Label](http://img.youtube.com/vi/QAn6n9Ik5DE/0.jpg)](https://youtu.be/59USvjy2toI)
+[![Video Label](http://img.youtube.com/vi/QAn6n9Ik5DE/0.jpg)](https://youtu.be/QAn6n9Ik5DE)
 
 ---
 
