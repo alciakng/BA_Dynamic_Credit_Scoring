@@ -6,11 +6,28 @@
  - 심사자는 차주의 Credit Scoring에 기여한 SHAP Importance를 조정하고 역산함으로써 신용평점을 조정할 수 있다는 아이디어를 제시합니다.
 
 
-<img width="200" height="65" alt="image" src="https://github.com/user-attachments/assets/31570db3-0e18-4375-a64b-fe27fde9315c" />
-<img width="200" height="75" alt="image" src="https://github.com/user-attachments/assets/8df3ef9e-14e1-4a34-80fa-deb512efe658" />
-<img width="300" height="72" alt="image" src="https://github.com/user-attachments/assets/c4e1286c-6ebb-4ebd-946e-20687c012fd0" />
+### 1. 기본 관계식
+$$
+\text{logit} = \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i
+$$
 
+- base_value: 전체 데이터의 평균 log-odds (shap.Explainer 제공)
+- \( \text{SHAP}_i \): 각 feature의 shap 값
+- logit = \( \log\left(\frac{p}{1-p}\right) \)
 
+---
+
+### 2. logit → 확률 변환
+$$
+p = \sigma(\text{logit}) = \frac{1}{1 + e^{-\text{logit}}}
+$$
+
+---
+
+### 3. SHAP 값으로 확률 계산
+$$
+p = \frac{1}{1 + \exp\left( - \left[ \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i \right] \right)}
+$$
 
 ## 📁 프로젝트 구성
 
