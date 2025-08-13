@@ -5,15 +5,10 @@
  - 대안정보를 이용한 신용평가 정보를 바탕으로 심사자가 개입 및 신용평점 사후 조정(Dynamic_Credit_Scoring) 시뮬레이션 아이디어를 제시합니다.
  - 심사자는 차주의 Credit Scoring에 기여한 SHAP Importance를 조정하고 역산함으로써 신용평점을 조정할 수 있다는 아이디어를 제시합니다.
 
-
 #### 1. 기본 관계식
 $$
-\text{logit} = \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i
+\text{logit} = \mathrm{base\_value} + \sum_{i=1}^n \mathrm{SHAP}_i
 $$
-
-- base_value: 전체 데이터의 평균 log-odds (shap.Explainer 제공)
-- \( \text{SHAP}_i \): 각 feature의 shap 값
-- logit = \( \log\left(\frac{p}{1-p}\right) \)
 
 ---
 
@@ -26,7 +21,7 @@ $$
 
 #### 3. SHAP 값으로 확률 계산
 $$
-p = \frac{1}{1 + \exp\left( - \left[ \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i \right] \right)}
+p = \frac{1}{1 + \exp\left( - \left[ \mathrm{base\_value} + \sum_{i=1}^n \mathrm{SHAP}_i \right] \right)}
 $$
 
 ## 📁 프로젝트 구성
