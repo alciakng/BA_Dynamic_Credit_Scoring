@@ -6,13 +6,13 @@
  - 심사자는 차주의 Credit Scoring에 기여한 SHAP Importance를 조정하고 역산함으로써 신용평점을 조정할 수 있다는 아이디어를 제시합니다.
 
 <!-- SHAP 공식 이미지 with titles -->
-<section style="max-width:720px;margin:16px auto;font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;">
+<section style="max-width:200px;margin:16px auto;font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;">
   <figure style="margin:0 0 24px;">
     <img
       src="https://github.com/user-attachments/assets/dad7b08b-e241-4731-b943-eb4391e944bd"
       alt="기본 관계식: base_value + Σ SHAP_i = logit"
       loading="lazy"
-      style="width:100%;height:auto;border:1px solid #e5e7eb;border-radius:10px;"
+      style="width:50%;height:auto;border:1px solid #e5e7eb;border-radius:10px;"
     />
     <figcaption style="margin-top:8px;font-weight:600;">기본 관계식</figcaption>
   </figure>
@@ -22,7 +22,7 @@
       src="https://github.com/user-attachments/assets/e0da201b-63a0-4ec7-b5a4-3732e519d515"
       alt="logit를 확률로 변환하는 로지스틱 함수"
       loading="lazy"
-      style="width:100%;height:auto;border:1px solid #e5e7eb;border-radius:10px;"
+      style="width:50%;height:auto;border:1px solid #e5e7eb;border-radius:10px;"
     />
     <figcaption style="margin-top:8px;font-weight:600;">logit → 확률 변환</figcaption>
   </figure>
