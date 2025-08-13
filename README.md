@@ -6,7 +6,7 @@
  - 심사자는 차주의 Credit Scoring에 기여한 SHAP Importance를 조정하고 역산함으로써 신용평점을 조정할 수 있다는 아이디어를 제시합니다.
 
 
-### 1. 기본 관계식
+#### 1. 기본 관계식
 $$
 \text{logit} = \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i
 $$
@@ -17,14 +17,14 @@ $$
 
 ---
 
-### 2. logit → 확률 변환
+#### 2. logit → 확률 변환
 $$
 p = \sigma(\text{logit}) = \frac{1}{1 + e^{-\text{logit}}}
 $$
 
 ---
 
-### 3. SHAP 값으로 확률 계산
+#### 3. SHAP 값으로 확률 계산
 $$
 p = \frac{1}{1 + \exp\left( - \left[ \text{base\_value} + \sum_{i=1}^n \text{SHAP}_i \right] \right)}
 $$
