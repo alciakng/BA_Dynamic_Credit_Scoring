@@ -3,6 +3,11 @@
  - 신용정보원 모의 데이터 기반 아이디어 기획 프로젝트입니다.
  - 차주, 대출, 신용카드, 연체정보, 보험정보 등의 다양한 모의 데이터셋을 통합합니다.
  - 대안정보를 이용한 신용평가 정보를 바탕으로 심사자가 개입 및 신용평점 사후 조정(Dynamic_Credit_Scoring) 시뮬레이션 아이디어를 제시합니다.
+ - 심사자는 차주의 Credit Scoring에 기여한 SHAP Importance를 조정하고 역산함으로써 신용평점을 조정할 수 있다는 아이디어를 제시합니다.
+
+<img width="249" height="77" alt="image" src="https://github.com/user-attachments/assets/dad7b08b-e241-4731-b943-eb4391e944bd" />
+<img width="316" height="134" alt="image" src="https://github.com/user-attachments/assets/e0da201b-63a0-4ec7-b5a4-3732e519d515" />
+
 
 ## 📁 프로젝트 구성
 
