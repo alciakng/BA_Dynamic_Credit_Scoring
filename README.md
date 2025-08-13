@@ -16,7 +16,7 @@
     />
     <figcaption style="margin-top:8px;font-weight:600;">기본 관계식</figcaption>
   </figure>
-
+  <br>
   <figure style="margin:0;">
     <img
       src="https://github.com/user-attachments/assets/e0da201b-63a0-4ec7-b5a4-3732e519d515"
